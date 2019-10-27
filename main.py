@@ -15,8 +15,10 @@ args = vars(ap.parse_args())
 
 # load the example image and convert it to grayscale
 image = cv2.imread(args["image"])
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
- 
+image2 = cv2.addWeighted(image, 2, image, 0, 100)
+#Change above line to decrease contract - cv2.addWeighted( img, contrast, img, 0, brightness) https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
+gray = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
+
 # check to see if we should apply thresholding to preprocess the
 # image
 if args["preprocess"] == "thresh":
