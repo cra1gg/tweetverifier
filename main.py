@@ -3,6 +3,8 @@ import pytesseract
 import argparse
 import cv2
 import os
+import re
+import GetOldTweets3 as got
 
 pytesseract.pytesseract.tesseract_cmd = 'C:\Program Files (x86)\Tesseract-OCR\\tesseract.exe'
 # construct the argument parse and parse the arguments
@@ -41,9 +43,24 @@ cv2.imwrite(filename, gray)
 text = pytesseract.image_to_string(Image.open(filename))
 os.remove(filename)
 print(text)
- 
+
+handle_check = re.search('(@[^ ]+) .*', text)
+if handle_check:
+	text = text.replace('\n', ' ').replace('\r', '')
+	handle = re.findall('(@[^ ]+) .*', text)[0] #Make list of handles, check each handle, return one with highest similarity score
+	print("Found a handle!")
+	print(handle)
+	print("Text:", text)
+	tweet = re.findall('@[^ ]+ (.*)[0-9]{1,2}:[0-9]{1,2}', text)[0] #Assuming timestamp is recognized properly, reads up to timestamp. Add check for time
+	print("Tweet:", tweet)
+	tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
+	tweet = got.manager.TweetManager.getTweets(tweetCriteria)[0] #Iterate through tweets, similarity score.
+	print(tweet.text)
+else: 
+	print("No handle")
+
 # show the output images
-cv2.imshow("Image", image)
+cv2.imshow("Image", image2)
 cv2.imshow("Output", gray)
 cv2.waitKey(0)
 
