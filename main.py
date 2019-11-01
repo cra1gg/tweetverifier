@@ -53,6 +53,15 @@ if handle_check:
 	print("Text:", text)
 	tweet = re.findall('@[^ ]+ (.*)[0-9]{1,2}:[0-9]{1,2}', text)[0] #Assuming timestamp is recognized properly, reads up to timestamp. Add check for time
 	print("Tweet:", tweet)
+	listOfTweets = []
+	for x in range(round(len(tweet)/4)):
+		listOfTweets.append(tweet[x:len(tweet)-x])
+		print(tweet[x:len(tweet)-x])
+	similarities = []
+	for t in listOfTweets:
+		#Search for tweet
+		#Find similarity
+		break
 	tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
 	tweet = got.manager.TweetManager.getTweets(tweetCriteria)[0] #Iterate through tweets, similarity score.
 	print(tweet.text)
@@ -63,5 +72,8 @@ else:
 cv2.imshow("Image", image2)
 cv2.imshow("Output", gray)
 cv2.waitKey(0)
+
+
+
 
 #Add code to remove temp image
