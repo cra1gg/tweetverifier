@@ -5,6 +5,7 @@ import cv2
 import os
 import re
 import GetOldTweets3 as got
+import numpy as np
 
 pytesseract.pytesseract.tesseract_cmd = 'C:\Program Files (x86)\Tesseract-OCR\\tesseract.exe'
 # construct the argument parse and parse the arguments
@@ -57,14 +58,18 @@ if handle_check:
 	for x in range(round(len(tweet)/4)):
 		listOfTweets.append(tweet[x:len(tweet)-x])
 		print(tweet[x:len(tweet)-x])
-	similarities = []
+	similarities = list(range(len(listOfTweets)))
 	for t in listOfTweets:
 		#Search for tweet
 		#Find similarity
-		break
-	tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
-	tweet = got.manager.TweetManager.getTweets(tweetCriteria)[0] #Iterate through tweets, similarity score.
-	print(tweet.text)
+		tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
+		tweet = got.manager.TweetManager.getTweets(tweetCriteria) #Iterate through tweets, similarity score.
+		similarities[i]=0
+		if (len(tweet) > 0): #make sure to check if multiple tweets match the criteria
+			similarities[i] = levenshtein(listOfTweets[i], tweet[0])
+	#tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
+	#tweet = got.manager.TweetManager.getTweets(tweetCriteria)[0] #Iterate through tweets, similarity score.
+	print(similarities)
 else: 
 	print("No handle")
 
@@ -74,6 +79,40 @@ cv2.imshow("Output", gray)
 cv2.waitKey(0)
 
 
+#Levenshtein Helper
+
+def call_counter(func):
+    def helper(*args, **kwargs):
+        helper.calls += 1
+        return func(*args, **kwargs)
+    helper.calls = 0
+    helper.__name__= func.__name__
+    return helper
+def memoize(func):
+    mem = {}
+    def memoizer(*args, **kwargs):
+        key = str(args) + str(kwargs)
+        if key not in mem:
+            mem[key] = func(*args, **kwargs)
+        return mem[key]
+    return memoizer
+@call_counter
+@memoize    
+def levenshtein(s, t):
+    if s == "":
+        return len(t)
+    if t == "":
+        return len(s)
+    if s[-1] == t[-1]:
+        cost = 0
+    else:
+        cost = 1
+    
+    res = min([levenshtein(s[:-1], t)+1,
+               levenshtein(s, t[:-1])+1, 
+               levenshtein(s[:-1], t[:-1]) + cost])
+    return res
+    return (matrix[size_x - 1, size_y - 1])
 
 
 #Add code to remove temp image
