@@ -67,6 +67,11 @@ if handle_check:
 		similarities[i]=0
 		if (len(tweet) > 0): #make sure to check if multiple tweets match the criteria
 			similarities[i] = levenshtein(listOfTweets[i], tweet[0])
+		matched_tweets = []
+		for i in range(len(similarities)):
+			least_similarity = len(listOfTweets) #Store max length of tweet
+			if (similarities[i] <= least_similarity):
+				matched_tweets.append()
 	#tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
 	#tweet = got.manager.TweetManager.getTweets(tweetCriteria)[0] #Iterate through tweets, similarity score.
 	print(similarities)
