@@ -8,12 +8,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-pip install pytesseract
-pip install pillow
-
 Need to download Tesseract OCR from the following link, also require vs
 ```
-Give examples
+pip install pytesseract
+pip install pillow
 ```
 
 ### Installing
