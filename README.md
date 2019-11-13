@@ -4,11 +4,12 @@ Python script to verify whether or not specified image of a tweet is real or not
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
 
 ### Prerequisites
 
-Need to download Tesseract OCR from the following link, also require vs
+Download Tesseract OCR from [here](https://www.google.com). Tessaract OCR requires Visual Studio tools which can be downloaded from [here](http://google.com)
+
 ```
 pip install pytesseract
 pip install pillow
@@ -16,18 +17,18 @@ pip install pillow
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+To run the program, clone the repo, and add it to the same directory as the photo of the tweet (png or jpeg)
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
+Run the program using 
 
 ```
-until finished
+python main.py -i {Image Directory and Name} 
+```
+
+Example:
+
+```
+python main.py -i testtweets/test1.png
 ```
 
 End with an example of getting some data out of the system or using it for a little demo
