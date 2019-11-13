@@ -10,6 +10,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 Download Tesseract OCR from [here](https://github.com/UB-Mannheim/tesseract/wiki). Tessaract OCR requires Build Tools for C++ which can be downloaded from [here](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=16)
 
+OpenCV is also required which can be downloaded from [here](https://opencv.org/releases/)
+
 ```
 pip install pytesseract
 pip install pillow

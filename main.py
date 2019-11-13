@@ -59,6 +59,7 @@ if handle_check:
 		listOfTweets.append(tweet[x:len(tweet)-x])
 		print(tweet[x:len(tweet)-x])
 	similarities = list(range(len(listOfTweets)))
+	i = 0
 	for t in listOfTweets:
 		#Search for tweet
 		#Find similarity
@@ -72,6 +73,7 @@ if handle_check:
 			least_similarity = len(listOfTweets) #Store max length of tweet
 			if (similarities[i] <= least_similarity):
 				matched_tweets.append()
+		i++
 	#tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
 	#tweet = got.manager.TweetManager.getTweets(tweetCriteria)[0] #Iterate through tweets, similarity score.
 	print(similarities)
