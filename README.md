@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Download Tesseract OCR from [here](https://www.google.com). Tessaract OCR requires Visual Studio tools which can be downloaded from [here](http://google.com)
+Download Tesseract OCR from [here](https://github.com/UB-Mannheim/tesseract/wiki). Tessaract OCR requires Build Tools for C++ which can be downloaded from [here](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=16)
 
 ```
 pip install pytesseract
