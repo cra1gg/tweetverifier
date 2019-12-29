@@ -47,24 +47,31 @@ print(text)
 handle_check = re.search('(@[^ ]+) .*', text)
 if handle_check:
 	text = text.replace('\n', ' ').replace('\r', '')
-	handle = re.findall('(@[^ ]+) .*', text)[0] #Make list of handles, check each handle, return one with highest similarity score
-	print("Found a handle!")
-	print(handle)
-	print("Text:", text)
-	tweet = re.findall('@[^ ]+ (.*)[0-9]{1,2}:[0-9]{1,2}', text)[0] #Assuming timestamp is recognized properly, reads up to timestamp. Add check for time
-	print("Tweet:", tweet)
+	#handle = re.findall('(@[^ ]+) .*', text)[0] #Make list of handles, check each handle, return one with highest similarity score
+	#print("Found a handle!")
+	#print(handle)
+	#print("Text:", text)
+	#tweet = re.findall('@[^ ]+ (.*)[0-9]{1,2}:[0-9]{1,2}', text)[0] #Assuming timestamp is recognized properly, reads up to timestamp. Add check for time
+	#print("Tweet:", tweet)
+	tweet = text
 	listOfTweets = []
 	for x in range(round(len(tweet)/4)):
 		listOfTweets.append(tweet[x:len(tweet)-x])
-		print(tweet[x:len(tweet)-x])
+		#print(tweet[x:len(tweet)-x])
 	similarities = []
+	max_diff = 10000
+	current_tweet = None
 	for t in listOfTweets:
-		#Search for tweet
-		#Find similarity
-		break
-	tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
-	tweet = got.manager.TweetManager.getTweets(tweetCriteria)[0] #Iterate through tweets, similarity score.
-	print(tweet.text)
+		tweetCriteria = got.manager.TweetCriteria().setQuerySearch(t).setMaxTweets(1)
+		tweets = got.manager.TweetManager.getTweets(tweetCriteria)
+		if len(tweets) > 0:
+			diff = levenshtein(tweets[0].text, t)
+			if diff < max_diff:
+				max_diff = diff
+				current_tweet = tweets[0]
+	#tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
+	#tweet = got.manager.TweetManager.getTweets(tweetCriteria)[0] #Iterate through tweets, similarity score.
+	print(current_tweet.text)
 else: 
 	print("No handle")
 
@@ -77,3 +84,37 @@ cv2.waitKey(0)
 
 
 #Add code to remove temp image
+#Levenshtein Helper
+
+def call_counter(func):
+    def helper(*args, **kwargs):
+        helper.calls += 1
+        return func(*args, **kwargs)
+    helper.calls = 0
+    helper.__name__= func.__name__
+    return helper
+def memoize(func):
+    mem = {}
+    def memoizer(*args, **kwargs):
+        key = str(args) + str(kwargs)
+        if key not in mem:
+            mem[key] = func(*args, **kwargs)
+        return mem[key]
+    return memoizer
+@call_counter
+@memoize    
+def levenshtein(s, t):
+    if s == "":
+        return len(t)
+    if t == "":
+        return len(s)
+    if s[-1] == t[-1]:
+        cost = 0
+    else:
+        cost = 1
+    
+    res = min([levenshtein(s[:-1], t)+1,
+               levenshtein(s, t[:-1])+1, 
+               levenshtein(s[:-1], t[:-1]) + cost])
+    return res
+    return (matrix[size_x - 1, size_y - 1])
