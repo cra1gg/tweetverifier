@@ -44,37 +44,14 @@ cv2.imwrite(filename, gray)
 text = pytesseract.image_to_string(Image.open(filename))
 os.remove(filename)
 print(text)
+text = text.replace('\n', ' ').replace('\r', '')
+tweet_length = len(text) // 3
+truncated_tweet = text[tweet_length:tweet_length*2]
+print(truncated_tweet)
+tweetCriteria = got.manager.TweetCriteria().setQuerySearch(truncated_tweet).setMaxTweets(1)
+tweets = got.manager.TweetManager.getTweets(tweetCriteria)
+print(tweets[0].permalink)
 
-handle_check = re.search('(@[^ ]+) .*', text)
-if handle_check:
-	text = text.replace('\n', ' ').replace('\r', '')
-	#handle = re.findall('(@[^ ]+) .*', text)[0] #Make list of handles, check each handle, return one with highest similarity score
-	#print("Found a handle!")
-	#print(handle)
-	#print("Text:", text)
-	#tweet = re.findall('@[^ ]+ (.*)[0-9]{1,2}:[0-9]{1,2}', text)[0] #Assuming timestamp is recognized properly, reads up to timestamp. Add check for time
-	#print("Tweet:", tweet)
-	tweet = text
-	listOfTweets = []
-	for x in range(round(len(tweet)/4)):
-		listOfTweets.append(tweet[x:len(tweet)-x])
-		#print(tweet[x:len(tweet)-x])
-	similarities = []
-	max_diff = 10000
-	current_tweet = None
-	for t in listOfTweets:
-		tweetCriteria = got.manager.TweetCriteria().setQuerySearch(t).setMaxTweets(1)
-		tweets = got.manager.TweetManager.getTweets(tweetCriteria)
-		if len(tweets) > 0:
-			diff = levenshtein(tweets[0].text, t)
-			if diff < max_diff:
-				max_diff = diff
-				current_tweet = tweets[0]
-	#tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
-	#tweet = got.manager.TweetManager.getTweets(tweetCriteria)[0] #Iterate through tweets, similarity score.
-	print(current_tweet.text)
-else: 
-	print("No handle")
 
 # show the output images
 cv2.imshow("Image", image2)
