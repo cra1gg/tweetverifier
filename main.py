@@ -44,41 +44,14 @@ cv2.imwrite(filename, gray)
 text = pytesseract.image_to_string(Image.open(filename))
 os.remove(filename)
 print(text)
+text = text.replace('\n', ' ').replace('\r', '')
+tweet_length = len(text) // 3
+truncated_tweet = text[tweet_length:tweet_length*2]
+print(truncated_tweet)
+tweetCriteria = got.manager.TweetCriteria().setQuerySearch(truncated_tweet).setMaxTweets(1)
+tweets = got.manager.TweetManager.getTweets(tweetCriteria)
+print(tweets[0].permalink)
 
-handle_check = re.search('(@[^ ]+) .*', text)
-if handle_check:
-	text = text.replace('\n', ' ').replace('\r', '')
-	handle = re.findall('(@[^ ]+) .*', text)[0] #Make list of handles, check each handle, return one with highest similarity score
-	print("Found a handle!")
-	print(handle)
-	print("Text:", text)
-	tweet = re.findall('@[^ ]+ (.*)[0-9]{1,2}:[0-9]{1,2}', text)[0] #Assuming timestamp is recognized properly, reads up to timestamp. Add check for time
-	print("Tweet:", tweet)
-	listOfTweets = []
-	for x in range(round(len(tweet)/4)):
-		listOfTweets.append(tweet[x:len(tweet)-x])
-		print(tweet[x:len(tweet)-x])
-	similarities = list(range(len(listOfTweets)))
-	i = 0
-	for t in listOfTweets:
-		#Search for tweet
-		#Find similarity
-		tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
-		tweet = got.manager.TweetManager.getTweets(tweetCriteria) #Iterate through tweets, similarity score.
-		similarities[i]=0
-		if (len(tweet) > 0): #make sure to check if multiple tweets match the criteria
-			similarities[i] = levenshtein(listOfTweets[i], tweet[0])
-		matched_tweets = []
-		for i in range(len(similarities)):
-			least_similarity = len(listOfTweets) #Store max length of tweet
-			if (similarities[i] <= least_similarity):
-				matched_tweets.append()
-		i++
-	#tweetCriteria = got.manager.TweetCriteria().setQuerySearch(tweet).setMaxTweets(1).setUsername(handle[1:])
-	#tweet = got.manager.TweetManager.getTweets(tweetCriteria)[0] #Iterate through tweets, similarity score.
-	print(similarities)
-else: 
-	print("No handle")
 
 # show the output images
 cv2.imshow("Image", image2)
@@ -123,3 +96,37 @@ def levenshtein(s, t):
 
 
 #Add code to remove temp image
+#Levenshtein Helper
+
+def call_counter(func):
+    def helper(*args, **kwargs):
+        helper.calls += 1
+        return func(*args, **kwargs)
+    helper.calls = 0
+    helper.__name__= func.__name__
+    return helper
+def memoize(func):
+    mem = {}
+    def memoizer(*args, **kwargs):
+        key = str(args) + str(kwargs)
+        if key not in mem:
+            mem[key] = func(*args, **kwargs)
+        return mem[key]
+    return memoizer
+@call_counter
+@memoize    
+def levenshtein(s, t):
+    if s == "":
+        return len(t)
+    if t == "":
+        return len(s)
+    if s[-1] == t[-1]:
+        cost = 0
+    else:
+        cost = 1
+    
+    res = min([levenshtein(s[:-1], t)+1,
+               levenshtein(s, t[:-1])+1, 
+               levenshtein(s[:-1], t[:-1]) + cost])
+    return res
+    return (matrix[size_x - 1, size_y - 1])
