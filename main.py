@@ -46,10 +46,18 @@ os.remove(filename)
 print(text)
 text = text.replace('\n', ' ').replace('\r', '')
 tweet_length = len(text) // 3
-truncated_tweet = text[tweet_length:tweet_length*2]
-print(truncated_tweet)
-tweetCriteria = got.manager.TweetCriteria().setQuerySearch(truncated_tweet).setMaxTweets(1)
-tweets = got.manager.TweetManager.getTweets(tweetCriteria)
+#truncated_tweet = text[tweet_length:tweet_length*2]
+#print(truncated_tweet)
+#tweetCriteria = got.manager.TweetCriteria().setQuerySearch(truncated_tweet).setMaxTweets(1)
+#tweets = got.manager.TweetManager.getTweets(tweetCriteria)
+#if len(tweets) < 1:
+    #truncate tweet in different place and check again  
+tweets = []
+marker = 0
+while len(tweets) < 1:
+    truncated_tweet = text[tweet_length:(tweet_length*2)-marker]
+    tweetCriteria = got.manager.TweetCriteria().setQuerySearch(truncated_tweet).setMaxTweets(1)
+    tweets = got.manager.TweetManager.getTweets(tweetCriteria)
 print(tweets[0].permalink)
 
 
@@ -57,42 +65,6 @@ print(tweets[0].permalink)
 cv2.imshow("Image", image2)
 cv2.imshow("Output", gray)
 cv2.waitKey(0)
-
-
-#Levenshtein Helper
-
-def call_counter(func):
-    def helper(*args, **kwargs):
-        helper.calls += 1
-        return func(*args, **kwargs)
-    helper.calls = 0
-    helper.__name__= func.__name__
-    return helper
-def memoize(func):
-    mem = {}
-    def memoizer(*args, **kwargs):
-        key = str(args) + str(kwargs)
-        if key not in mem:
-            mem[key] = func(*args, **kwargs)
-        return mem[key]
-    return memoizer
-@call_counter
-@memoize    
-def levenshtein(s, t):
-    if s == "":
-        return len(t)
-    if t == "":
-        return len(s)
-    if s[-1] == t[-1]:
-        cost = 0
-    else:
-        cost = 1
-    
-    res = min([levenshtein(s[:-1], t)+1,
-               levenshtein(s, t[:-1])+1, 
-               levenshtein(s[:-1], t[:-1]) + cost])
-    return res
-    return (matrix[size_x - 1, size_y - 1])
 
 
 #Add code to remove temp image
