@@ -43,12 +43,23 @@ cv2.imwrite(filename, gray)
 # the temporary file
 text = pytesseract.image_to_string(Image.open(filename))
 os.remove(filename)
-print(text)
+
 text = text.replace('\n', ' ').replace('\r', '')
-tweet_length = len(text) // 3
+username_match = re.search('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)', text)
+
+print(text)
+tweet_length = len(text) // 4
 truncated_tweet = text[tweet_length:tweet_length*2]
-print(truncated_tweet)
-tweetCriteria = got.manager.TweetCriteria().setQuerySearch(truncated_tweet).setMaxTweets(1)
+if (username_match is not None):
+    username = username_match.group()
+    if (re.search('((?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)?).*', text)) is not None:
+        truncated_tweet = re.search('((?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)?).*', text).group()
+        truncated_tweet = truncated_tweet[len(username):].lstrip(' ')
+    print("Username:" + username + "\n")
+    print("Tweet:" + truncated_tweet + "\n")
+    tweetCriteria = got.manager.TweetCriteria().setQuerySearch(truncated_tweet).setMaxTweets(1).setUsername(username)
+else:
+    tweetCriteria = got.manager.TweetCriteria().setQuerySearch(truncated_tweet).setMaxTweets(1)
 tweets = got.manager.TweetManager.getTweets(tweetCriteria)
 print(tweets[0].permalink)
 
